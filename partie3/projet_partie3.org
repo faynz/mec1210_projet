@@ -27,7 +27,7 @@ m_dot[2] = m_dot[3] - m_dot[11] "!m_dot11 not init"
 s_virt[2] = s[1]: "!On suppose que l'entropie est toujours isentropique pour calculer h_virt[2], donc s_virt[x] equivaut a s[x]"
 h_virt[2] = enthalpy(Water,s=s_virt[2],P=P[2])
 
-rendement2 = 0.81 "!"
+rendement2 = 0.81
 h[2]= h[1] - rendement2*(h[1] - h_virt[2])
 
 T[2]=temperature(Water,P=P[2],s=s[2])
@@ -55,7 +55,7 @@ m_dot[4] = m_dot[3]
 s_virt[4] = s_virt[3]: "!On suppose que l'entropie est toujours isentropique pour calculer h_virt[2], donc s_virt[x] equivaut a s[x]"
 h_virt[4] = enthalpy(Water,s=s_virt[4],P=P[4])
 
-rendement4 = 0.78 "!"
+rendement4 = 0.78
 h[4]= h[3] - rendement4*(h[3] - h_virt[4])
 
 T[4]=temperature(Water,P=P[4],s=s_virt[4])
@@ -109,6 +109,7 @@ s_virt[9]=s[8] "On suppose evol. isentropique"
 
 "Calcul enthalpie"
 h_virt[9] = enthalpy(Water,s=s_virt[9],P=P[9])
+rendement9 = 0.8
 h[9]= h[8] - rendement9*(h[8] - h_virt[9])
 
 T[9]=temperature(Water,P=P[9],h=h[9])
@@ -118,37 +119,53 @@ x[9] = quality(Water,P=P[9],h=h[9])
 * "POINT 10: Entree turbine basse pression"
 "---------------------------------------------------------------------------------------------------------------------------------"
 m_dot[10] = m_dot[9]
-s[6]=s[5] "Évolution isentropique"
-P[6] = P[5] "!Aucune perte de pression dans les conduits?"
-T[6]=temperature(Water,P=P[6],s=s[6])
+P[10] = P[9] "!Aucune perte de pression dans les conduits?"
+T[10] = lookup('Data', 10, 'T')
+s[10]=entropy(Water,T=T[10],P=P[10])
 "Calcul titre"
-h[6]=enthalpy(Water,T=T[6],P=P[6])
-x[6] = quality(Water,T=T[6],h=h[6])
+h[10]=enthalpy(Water,T=T[10],P=P[10])
+x[10] = quality(Water,T=T[10],h=h[10])
 
 * "POINT 11: Soutirage de la vapeur"
 "---------------------------------------------------------------------------------------------------------------------------------"
-"!m_dot[11] = m_dot[10]*0.1"
-s[6]=s[5] "Évolution isentropique"
-P[6] = P[5] "!Aucune perte de pression dans les conduits?"
-T[6]=temperature(Water,P=P[6],s=s[6])
+m_dot[11] = m_dot[10]*0.1
+P[11] = lookup('Data', 11, 'P')
+s_virt[11]=s[10] "On suppose l'evolution isentropique"
+
+"Calcul enthalpie"
+h_virt[11]=enthalpy(Water,s=s_virt[11],P=P[11])
+rendement11 = 0.88
+h[11]= h[10] - rendement11*(h[10] - h_virt[11])
+
+"Calcul temperature"
+T[11]=temperature(Water,P=P[11],h=h[11])
 "Calcul titre"
-h[6]=enthalpy(Water,T=T[6],P=P[6])
-x[6] = quality(Water,T=T[6],h=h[6])
+x[11] = quality(Water,P=P[11],h=h[11])
 
 * "POINT 12: Sortie turbine basse pression"
 "---------------------------------------------------------------------------------------------------------------------------------"
-"!m_dot[12] = m_dot[10]*0.9"
-s[6]=s[5] "Évolution isentropique"
-P[6] = P[5] "!Aucune perte de pression dans les conduits?"
-T[6]=temperature(Water,P=P[6],s=s[6])
+m_dot[12] = m_dot[10]*0.9
+s_virt[12] = s_virt[11] "! ??"
+P[12] = P[13] "Hypothese donne"
+
+"Calcul enthalpie"
+h_virt[11]=enthalpy(Water,s=s_virt[11],P=P[11])
+rendement12 = 0.85
+h[12]= h[11] - rendement12*(h[11] - h_virt[12])
+
+"Calcul temperature"
+T[12]=temperature(Water,P=P[12],h=h[12])
 "Calcul titre"
-h[6]=enthalpy(Water,T=T[6],P=P[6])
-x[6] = quality(Water,T=T[6],h=h[6])
+x[12] = quality(Water,P=P[12],h=h[12])
 
 * "POINT 13: Sortie du condenseur"
 "---------------------------------------------------------------------------------------------------------------------------------"
 m_dot[13] = m_dot[12]
+P[13] = lookup('Data', 13, 'P')
+x[13] = lookup('Data', 13, 'x')
 
+"Calcul temperature"
+T[13]=temperature(Water,P=P[13],x=x[13])
 
 * "POINT 14: Entree eau de refroidissement"
 "---------------------------------------------------------------------------------------------------------------------------------"
@@ -157,11 +174,10 @@ T[14] = lookup('Data', 14, 'T')
 P[14] = lookup('Data', 14, 'P')
 "Calcul titre"
 h[14]=enthalpy(Water,T=T[14],P=P[14])
-x[14] = quality(Water,T=T[14],h=h[14])
+x[14] = quality(Water,T=T[14],h=h[14])"! Pouvons nous calculer le titre a partir de T et P sur EES ???"
 s[14] = entropy(Water,T=T[14],P=P[14])
-
 * "POINT 15: Sortie eau de refroidissement"
-"---------------------------------------------------------------------------------------------------------------------------------"
+  "--------------------------------------------------------------------------------------------------------------------------------"
 m_dot[15] = m_dot[14]
 T[15] = lookup('Data', 15, 'T')
 P[15] = lookup('Data', 15, 'P')
@@ -170,6 +186,7 @@ h[15]=enthalpy(Water,T=T[15],P=P[15])
 x[15] = quality(Water,T=T[15],h=h[15])
 s[15] = entropy(Water,T=T[15],P=P[15])
 
+* Questions 
 "a)"
 "---------------------------------------------------------------------------------------------------------------------------------"
 Pp=m_dot[1]*(h[2]-h[1])
