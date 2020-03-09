@@ -186,14 +186,17 @@ h[15]=enthalpy(Water,T=T[15],P=P[15])
 x[15] = quality(Water,T=T[15],h=h[15])
 s[15] = entropy(Water,T=T[15],P=P[15])
 
-* Questions 
-"a)"
+* Questions
+"a) Calculer la puissance reelle utilisee par les 2 pompes (WOut)"
 "---------------------------------------------------------------------------------------------------------------------------------"
-Pp=m_dot[1]*(h[2]-h[1])
+W_dot1= m_dot[1]*(h[2]-h[1])
+W_dot2= m_dot[3]*(h[4]-h[3])
+W_dot_total = W_dot1 + W_dot2
 
-"b)"
+"b) Calculer la puissance brute des turbines et la puissance nette du cycle"
 "---------------------------------------------------------------------------------------------------------------------------------"
-Pt=m_dot[5]*(h[5]-h[6])
+Pt1=m_dot[8]*(h[8]-h[9])
+Pt2=m_dot[10]*(h[5]-h[6])
 Pn=Pp+Pt
 
 "c)"
